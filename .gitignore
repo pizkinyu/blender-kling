@@ -1,0 +1,8 @@
+# Ignore video files (too large for GitHub)
+*.mp4
+*.mov
+*.webm
+
+# System files
+.DS_Store
+.claude
