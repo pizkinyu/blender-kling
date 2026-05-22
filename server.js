@@ -4,6 +4,7 @@ const path = require('path');
 
 const PORT = 3000;
 const PUBLIC = path.join(__dirname, 'public');
+const ROOT  = __dirname;
 
 const mime = {
   '.html': 'text/html',
@@ -21,10 +22,14 @@ const server = http.createServer((req, res) => {
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
   if (urlPath === '/') urlPath = '/index.html';
 
-  const filePath = path.join(PUBLIC, urlPath);
+  // Try public/ first, then fall back to root (for video asset)
+  let filePath = path.join(PUBLIC, urlPath);
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(ROOT, urlPath);
+  }
 
   // Prevent directory traversal
-  if (!filePath.startsWith(PUBLIC)) {
+  if (!filePath.startsWith(PUBLIC) && !filePath.startsWith(ROOT)) {
     res.writeHead(403);
     return res.end('Forbidden');
   }
